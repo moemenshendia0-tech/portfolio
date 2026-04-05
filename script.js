@@ -1,419 +1,268 @@
-// ===== Theme Toggle (Dark / Light Mode) =====
-const themeToggle = document.getElementById('themeToggle');
-const body = document.body;
+(function () {
+    'use strict';
 
-// Load saved theme
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'dark') {
-    body.classList.add('dark-mode');
-} else {
-    body.classList.remove('dark-mode');
-}
+    const body = document.body;
 
-themeToggle.addEventListener('click', function () {
-    body.classList.toggle('dark-mode');
-    const isDark = body.classList.contains('dark-mode');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-});
-
-// ===== Mobile Nav Toggle =====
-const navToggle = document.getElementById('navToggle');
-const navMenu = document.getElementById('navMenu');
-
-navToggle.addEventListener('click', function () {
-    navToggle.classList.toggle('active');
-    navMenu.classList.toggle('active');
-    document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
-});
-
-// Close menu when clicking a link (mobile)
-document.querySelectorAll('.nav-menu a').forEach(link => {
-    link.addEventListener('click', function () {
-        navToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-        document.body.style.overflow = '';
-    });
-});
-
-// ===== Navbar background on scroll =====
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', function () {
-    if (window.scrollY > 50) {
-        navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.08)';
+    // ===== Theme (قبل أي شيء — بدون أخطاء لو العنصر ناقص) =====
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
     } else {
-        navbar.style.boxShadow = 'none';
+        body.classList.remove('dark-mode');
     }
-});
 
-// ===== Footer year =====
-document.getElementById('year').textContent = new Date().getFullYear();
-
-// ===== Certificate modal (click + to enlarge) =====
-const certificateModal = document.getElementById('certificateModal');
-const certificateModalImg = document.getElementById('certificateModalImg');
-const certificateModalTitle = document.getElementById('certificateModalTitle');
-const certificateModalClose = document.getElementById('certificateModalClose');
-const certificateModalBackdrop = certificateModal && certificateModal.querySelector('.certificate-modal-backdrop');
-
-function openCertificateModal(src, title) {
-    if (!certificateModal || !certificateModalImg) return;
-    certificateModalImg.src = src;
-    certificateModalImg.alt = title;
-    certificateModalTitle.textContent = title;
-    certificateModal.classList.add('open');
-    certificateModal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeCertificateModal() {
-    if (!certificateModal) return;
-    certificateModal.classList.remove('open');
-    certificateModal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-}
-
-if (certificateModalClose) {
-    certificateModalClose.addEventListener('click', closeCertificateModal);
-}
-if (certificateModalBackdrop) {
-    certificateModalBackdrop.addEventListener('click', closeCertificateModal);
-}
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && certificateModal && certificateModal.classList.contains('open')) {
-        closeCertificateModal();
+    function closeMobileMenu() {
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        const navBackdrop = document.getElementById('navBackdrop');
+        navToggle?.classList.remove('active');
+        navMenu?.classList.remove('active');
+        navBackdrop?.classList.remove('active');
+        navBackdrop?.setAttribute('aria-hidden', 'true');
+        body.classList.remove('menu-open');
+        body.style.overflow = '';
+        navToggle?.setAttribute('aria-expanded', 'false');
     }
-});
 
-document.querySelectorAll('.certificate-item').forEach(function (item) {
-    item.addEventListener('click', function () {
-        var src = item.getAttribute('data-cert-src');
-        var title = item.getAttribute('data-cert-title') || '';
-        if (src) openCertificateModal(src, title);
+    function openMobileMenu() {
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        const navBackdrop = document.getElementById('navBackdrop');
+        navToggle?.classList.add('active');
+        navMenu?.classList.add('active');
+        navBackdrop?.classList.add('active');
+        navBackdrop?.setAttribute('aria-hidden', 'false');
+        body.classList.add('menu-open');
+        body.style.overflow = 'hidden';
+        navToggle?.setAttribute('aria-expanded', 'true');
+    }
+
+    function toggleMobileMenu() {
+        const navMenu = document.getElementById('navMenu');
+        if (!navMenu) return;
+        if (navMenu.classList.contains('active')) {
+            closeMobileMenu();
+        } else {
+            openMobileMenu();
+        }
+    }
+
+    document.getElementById('themeToggle')?.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
     });
-});
 
-// ===== Download CV - Update this href when you have your CV file =====
-const downloadCV = document.getElementById('downloadCV');
-// Example: downloadCV.href = 'assets/cv.pdf';
+    document.getElementById('navToggle')?.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleMobileMenu();
+    });
 
-// ===== Contact links - Update these with your real data =====
-// document.getElementById('contactEmail').href = 'mailto:your@email.com';
-// document.querySelector('#contactEmail .contact-value').textContent = 'your@email.com';
-// document.getElementById('contactLinkedIn').href = 'https://linkedin.com/in/yourprofile';
-// document.querySelector('#contactLinkedIn .contact-value').textContent = 'linkedin.com/in/yourprofile';
-// document.getElementById('contactPhone').href = 'tel:+201234567890';
-// document.querySelector('#contactPhone .contact-value').textContent = '+20 123 456 7890';
-// ===== Certificate modal - نسخة محسنة =====
-document.addEventListener('DOMContentLoaded', function () {
-    console.log('✅ Certificate script loaded');
+    document.getElementById('navBackdrop')?.addEventListener('click', function () {
+        closeMobileMenu();
+    });
 
+    document.querySelectorAll('.nav-menu a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            closeMobileMenu();
+        });
+    });
+
+    // ===== Navbar shadow on scroll =====
+    const navbar = document.getElementById('navbar');
+    if (navbar) {
+        window.addEventListener('scroll', function () {
+            navbar.style.boxShadow =
+                window.scrollY > 50 ? '0 2px 20px rgba(0,0,0,0.08)' : 'none';
+        });
+    }
+
+    // ===== Footer year =====
+    const yearEl = document.getElementById('year');
+    if (yearEl) {
+        yearEl.textContent = String(new Date().getFullYear());
+    }
+
+    // ===== Certificate modal =====
     const certificateModal = document.getElementById('certificateModal');
     const certificateModalImg = document.getElementById('certificateModalImg');
-    const certificateModalTitle = document.getElementById('certificateModalTitle');
     const certificateModalClose = document.getElementById('certificateModalClose');
-    const certificateModalBackdrop = document.querySelector('.certificate-modal-backdrop');
+    const certificateModalBackdrop = certificateModal?.querySelector('.certificate-modal-backdrop');
 
-    // التأكد من وجود العناصر
-    if (!certificateModal || !certificateModalImg) {
-        console.error('❌ Modal elements not found!');
-        return;
-    }
-
-    // فتح Modal
     function openCertificateModal(src, title) {
-        console.log('Opening modal with:', src);
+        if (!certificateModal || !certificateModalImg) return;
         certificateModalImg.src = src;
-        certificateModalImg.alt = title;
-        if (certificateModalTitle) {
-            certificateModalTitle.textContent = title;
-        }
+        certificateModalImg.alt = title || '';
         certificateModal.classList.add('open');
         certificateModal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
+        body.style.overflow = 'hidden';
     }
 
-    // إغلاق Modal
     function closeCertificateModal() {
+        if (!certificateModal) return;
         certificateModal.classList.remove('open');
         certificateModal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
+        body.style.overflow = '';
     }
 
-    // إضافة event listeners للشهادات
-    const certificates = document.querySelectorAll('.certificate-item');
-    console.log(`📊 Found ${certificates.length} certificate items`);
+    certificateModalClose?.addEventListener('click', closeCertificateModal);
+    certificateModalBackdrop?.addEventListener('click', closeCertificateModal);
 
-    certificates.forEach(function (item, index) {
-        item.addEventListener('click', function (e) {
-            e.preventDefault();
-            const src = this.getAttribute('data-cert-src');
-            const title = this.getAttribute('data-cert-title') || 'Certificate';
-
-            console.log(`🖱️ Clicked certificate ${index + 1}:`, src);
-
-            if (src) {
-                openCertificateModal(src, title);
-            } else {
-                console.error('❌ No src found for certificate', this);
-            }
+    document.querySelectorAll('.certificate-item').forEach(function (item) {
+        item.addEventListener('click', function () {
+            const src = item.getAttribute('data-cert-src');
+            const title = item.getAttribute('data-cert-title') || '';
+            if (src) openCertificateModal(src, title);
         });
     });
 
-    // Close button
-    if (certificateModalClose) {
-        certificateModalClose.addEventListener('click', closeCertificateModal);
-    }
-
-    // Backdrop click
-    if (certificateModalBackdrop) {
-        certificateModalBackdrop.addEventListener('click', closeCertificateModal);
-    }
-
-    // ESC key
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && certificateModal.classList.contains('open')) {
+        if (e.key !== 'Escape') return;
+        if (certificateModal?.classList.contains('open')) {
             closeCertificateModal();
+        } else {
+            closeMobileMenu();
         }
     });
-});
-// ===== شبكة الجزيئات المتحركة بالـ Canvas =====
-function initParticles() {
-    const canvas = document.createElement('canvas');
-    canvas.className = 'canvas-particles';
-    document.body.prepend(canvas);
 
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    let particles = [];
+    // ===== Particles — Home فقط، أخف + يتوقف لما القسم مش ظاهر =====
+    function initHomeParticles() {
+        const host = document.getElementById('homeParticlesHost');
+        if (!host) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const PARTICLE_COUNT = 50;
-    const CONNECTION_DISTANCE = 150;
+        const canvas = document.createElement('canvas');
+        canvas.className = 'canvas-particles';
+        canvas.setAttribute('aria-hidden', 'true');
+        host.appendChild(canvas);
 
-    function resize() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-    }
+        const ctx = canvas.getContext('2d');
+        let width = 1;
+        let height = 1;
+        let particles = [];
+        let running = false;
+        let frameId = 0;
 
-    function createParticles() {
-        particles = [];
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-            particles.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5,
-                size: Math.random() * 2 + 1
-            });
+        const PARTICLE_COUNT = 28;
+        const CONNECTION_DISTANCE = 130;
+
+        function resize() {
+            const r = host.getBoundingClientRect();
+            width = Math.max(1, Math.floor(r.width));
+            height = Math.max(1, Math.floor(r.height));
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = Math.floor(width * dpr);
+            canvas.height = Math.floor(height * dpr);
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            createParticles();
         }
-    }
 
-    function updateParticles() {
-        particles.forEach(p => {
-            p.x += p.vx;
-            p.y += p.vy;
-
-            // الحدود
-            if (p.x < 0 || p.x > width) p.vx *= -1;
-            if (p.y < 0 || p.y > height) p.vy *= -1;
-
-            // تصحيح الموضع
-            p.x = Math.max(0, Math.min(width, p.x));
-            p.y = Math.max(0, Math.min(height, p.y));
-        });
-    }
-
-    function drawParticles() {
-        ctx.clearRect(0, 0, width, height);
-
-        // رسم الخطوط بين الجزيئات القريبة
-        ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--highlight').trim() || '#C0FF4E';
-        ctx.lineWidth = 0.5;
-
-        particles.forEach((p1, i) => {
-            particles.slice(i + 1).forEach(p2 => {
-                const dx = p1.x - p2.x;
-                const dy = p1.y - p2.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < CONNECTION_DISTANCE) {
-                    const opacity = (1 - distance / CONNECTION_DISTANCE) * 0.3;
-                    ctx.beginPath();
-                    ctx.strokeStyle = `rgba(192, 255, 78, ${opacity})`;
-                    ctx.moveTo(p1.x, p1.y);
-                    ctx.lineTo(p2.x, p2.y);
-                    ctx.stroke();
-                }
-            });
-        });
-
-        // رسم الجزيئات
-        particles.forEach(p => {
-            ctx.beginPath();
-            ctx.fillStyle = '#C0FF4E';
-            ctx.shadowColor = '#C0FF4E';
-            ctx.shadowBlur = 10;
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fill();
-        });
-
-        ctx.shadowBlur = 0;
-    }
-
-    function animate() {
-        updateParticles();
-        drawParticles();
-        requestAnimationFrame(animate);
-    }
-
-    window.addEventListener('resize', () => {
-        resize();
-        createParticles();
-    });
-
-    resize();
-    createParticles();
-    animate();
-}
-
-// تشغيل الجزيئات بعد تحميل الصفحة
-document.addEventListener('DOMContentLoaded', initParticles);
-// ===== شبكة الجزيئات المتحركة - نسخة محسنة لـ Light Mode =====
-// ===== Interactive Particles Background =====
-function initParticles() {
-    const canvas = document.createElement("canvas");
-    canvas.className = "canvas-particles";
-    document.body.prepend(canvas);
-
-    const ctx = canvas.getContext("2d");
-    let width, height;
-    let particles = [];
-    let mouse = { x: null, y: null };
-
-    const PARTICLE_COUNT = 70;
-    const CONNECTION_DISTANCE = 200;
-    const MOUSE_RADIUS = 150;
-
-    function resize() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-    }
-
-    function createParticles() {
-        particles = [];
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-            particles.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: (Math.random() - 0.5) * 0.4,
-                size: Math.random() * 3 + 1
-            });
-        }
-    }
-
-    function updateParticles() {
-        particles.forEach(p => {
-
-            // حركة طبيعية
-            p.x += p.vx;
-            p.y += p.vy;
-
-            // تفاعل مع الماوس
-            if (mouse.x && mouse.y) {
-                const dx = p.x - mouse.x;
-                const dy = p.y - mouse.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < MOUSE_RADIUS) {
-                    const force = (MOUSE_RADIUS - distance) / MOUSE_RADIUS;
-                    p.x += dx * force * 0.02;
-                    p.y += dy * force * 0.02;
-                }
+        function createParticles() {
+            particles = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    size: Math.random() * 2 + 0.7
+                });
             }
+        }
 
-            // حدود الشاشة
-            if (p.x < 0 || p.x > width) p.vx *= -1;
-            if (p.y < 0 || p.y > height) p.vy *= -1;
-        });
-    }
+        function updateParticles() {
+            particles.forEach(function (p) {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+                p.x = Math.max(0, Math.min(width, p.x));
+                p.y = Math.max(0, Math.min(height, p.y));
+            });
+        }
 
-    function drawParticles() {
-        ctx.clearRect(0, 0, width, height);
+        function drawParticles() {
+            ctx.clearRect(0, 0, width, height);
+            const isDark = body.classList.contains('dark-mode');
 
-        const isDark = document.body.classList.contains("dark-mode");
-
-        // رسم الخطوط
-        particles.forEach((p1, i) => {
-            particles.slice(i + 1).forEach(p2 => {
-                const dx = p1.x - p2.x;
-                const dy = p1.y - p2.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < CONNECTION_DISTANCE) {
-                    const opacity = (1 - distance / CONNECTION_DISTANCE) * 0.3;
-
-                    ctx.beginPath();
-                    ctx.strokeStyle = isDark
-                        ? `rgba(122,176,160,${opacity})`
-                        : `rgba(64,81,59,${opacity})`;
-
-                    ctx.lineWidth = 0.7;
-                    ctx.moveTo(p1.x, p1.y);
-                    ctx.lineTo(p2.x, p2.y);
-                    ctx.stroke();
+            particles.forEach(function (p1, i) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < CONNECTION_DISTANCE) {
+                        const opacity = (1 - distance / CONNECTION_DISTANCE) * 0.22;
+                        ctx.beginPath();
+                        ctx.strokeStyle = isDark
+                            ? 'rgba(122,176,160,' + opacity + ')'
+                            : 'rgba(64,81,59,' + opacity + ')';
+                        ctx.lineWidth = 0.55;
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
                 }
             });
-        });
 
-        // رسم الجزيئات
-        particles.forEach(p => {
-            ctx.beginPath();
+            particles.forEach(function (p) {
+                ctx.beginPath();
+                ctx.fillStyle = isDark ? '#7ab0a0' : '#40513B';
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
 
-            if (isDark) {
-                ctx.fillStyle = "#7ab0a0";
-                ctx.shadowColor = "#7ab0a0";
-            } else {
-                ctx.fillStyle = "#40513B";
-                ctx.shadowColor = "#9DC08B";
+        function tick() {
+            if (!running) return;
+            updateParticles();
+            drawParticles();
+            frameId = requestAnimationFrame(tick);
+        }
+
+        function setRunning(on) {
+            if (on === running) return;
+            running = on;
+            if (running) {
+                frameId = requestAnimationFrame(tick);
+            } else if (frameId) {
+                cancelAnimationFrame(frameId);
+                frameId = 0;
             }
+        }
 
-            ctx.shadowBlur = 8;
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fill();
-        });
+        const homeSection = document.getElementById('home');
+        if (homeSection && 'IntersectionObserver' in window) {
+            var io = new IntersectionObserver(
+                function (entries) {
+                    entries.forEach(function (en) {
+                        setRunning(en.isIntersecting);
+                    });
+                },
+                { root: null, threshold: 0.08, rootMargin: '40px' }
+            );
+            io.observe(homeSection);
+        } else {
+            setRunning(true);
+        }
 
-        ctx.shadowBlur = 0;
-    }
+        if (typeof ResizeObserver !== 'undefined') {
+            new ResizeObserver(resize).observe(host);
+        }
+        window.addEventListener('resize', resize);
 
-    function animate() {
-        updateParticles();
-        drawParticles();
-        requestAnimationFrame(animate);
-    }
-
-    // حركة الماوس
-    window.addEventListener("mousemove", e => {
-        mouse.x = e.x;
-        mouse.y = e.y;
-    });
-
-    window.addEventListener("mouseleave", () => {
-        mouse.x = null;
-        mouse.y = null;
-    });
-
-    window.addEventListener("resize", () => {
         resize();
-        createParticles();
+    }
+
+    initHomeParticles();
+
+    window.addEventListener('resize', function () {
+        if (window.innerWidth > 768) {
+            closeMobileMenu();
+        }
     });
+})();
 
-    resize();
-    createParticles();
-    animate();
-}
-
-document.addEventListener("DOMContentLoaded", initParticles);

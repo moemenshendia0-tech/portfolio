@@ -13,17 +13,6 @@
      --border-subtle: rgba(64, 81, 59, 0.2);
  }
 
- /* Dark Mode */
- body.dark-mode {
-     --bg-main: #1a1f17;
-     --bg-card: #252d20;
-     --text-primary: #EDF1D6;
-     --text-secondary: #b8c4a8;
-     --nav-bg: rgba(26, 31, 23, 0.95);
-     --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-     --border-subtle: rgba(157, 192, 139, 0.2);
- }
-
  * {
      margin: 0;
      padding: 0;
@@ -111,6 +100,33 @@
      height: 2px;
      background: var(--text-primary);
      transition: 0.3s;
+ }
+
+ .nav-backdrop {
+     display: none;
+     position: fixed;
+     inset: 0;
+     z-index: 900;
+     background: rgba(0, 0, 0, 0.35);
+     backdrop-filter: blur(2px);
+     opacity: 0;
+     pointer-events: none;
+     transition: opacity 0.3s ease;
+ }
+
+ .nav-backdrop.active {
+     display: block;
+     opacity: 1;
+     pointer-events: auto;
+ }
+
+ @media (min-width: 769px) {
+     .nav-backdrop,
+     .nav-backdrop.active {
+         display: none !important;
+         opacity: 0 !important;
+         pointer-events: none !important;
+     }
  }
 
  .nav-toggle.active span:nth-child(1) {
@@ -203,7 +219,177 @@
      z-index: -1;
  }
 
+ /* خلفية مضيئة + جزيئات — داخل الـ Home فقط */
+ .home-visual-bg {
+     position: absolute;
+     inset: 0;
+     z-index: 0;
+     pointer-events: none;
+     overflow: hidden;
+ }
+
+ .animated-background {
+     position: absolute;
+     inset: 0;
+     z-index: 0;
+ }
+
+ .bg-circle {
+     position: absolute;
+     border-radius: 50%;
+     filter: blur(48px);
+     opacity: 0.55;
+     animation: bgOrbFloat 18s ease-in-out infinite;
+ }
+
+ .circle-1 {
+     width: min(420px, 70vw);
+     height: min(420px, 70vw);
+     top: -12%;
+     left: -8%;
+     background: radial-gradient(circle, rgba(164, 190, 123, 0.45), transparent 65%);
+ }
+
+ .circle-2 {
+     width: min(360px, 60vw);
+     height: min(360px, 60vw);
+     bottom: -10%;
+     right: -5%;
+     background: radial-gradient(circle, rgba(96, 153, 102, 0.4), transparent 65%);
+     animation-delay: -4s;
+ }
+
+ .circle-3 {
+     width: min(280px, 45vw);
+     height: min(280px, 45vw);
+     top: 40%;
+     right: 5%;
+     background: radial-gradient(circle, rgba(157, 192, 139, 0.35), transparent 60%);
+     animation-delay: -8s;
+ }
+
+ .circle-4 {
+     width: min(220px, 40vw);
+     height: min(220px, 40vw);
+     bottom: 25%;
+     left: 10%;
+     background: radial-gradient(circle, rgba(192, 255, 78, 0.2), transparent 60%);
+     animation-delay: -12s;
+ }
+
+ .bg-dot {
+     position: absolute;
+     width: 6px;
+     height: 6px;
+     border-radius: 50%;
+     background: var(--highlight-light);
+     box-shadow: 0 0 12px rgba(164, 190, 123, 0.7);
+     opacity: 0.35;
+     animation: bgDotPulse 4s ease-in-out infinite;
+ }
+
+ .dot-1 {
+     top: 12%;
+     left: 22%;
+ }
+
+ .dot-2 {
+     top: 28%;
+     right: 18%;
+     animation-delay: 0.6s;
+ }
+
+ .dot-3 {
+     top: 55%;
+     left: 8%;
+     animation-delay: 1.2s;
+ }
+
+ .dot-4 {
+     bottom: 18%;
+     right: 25%;
+     animation-delay: 0.9s;
+ }
+
+ .dot-5 {
+     top: 70%;
+     left: 45%;
+     animation-delay: 1.5s;
+ }
+
+ .dot-6 {
+     top: 8%;
+     right: 40%;
+     animation-delay: 0.3s;
+ }
+
+ .dot-7 {
+     bottom: 35%;
+     left: 30%;
+     animation-delay: 1.1s;
+ }
+
+ .dot-8 {
+     top: 42%;
+     right: 8%;
+     animation-delay: 0.8s;
+ }
+
+ .home-particles-host {
+     position: absolute;
+     inset: 0;
+     z-index: 1;
+     pointer-events: none;
+     overflow: hidden;
+ }
+
+ .canvas-particles {
+     display: block;
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     pointer-events: none;
+ }
+
+ @keyframes bgOrbFloat {
+
+     0%,
+     100% {
+         transform: translate(0, 0) scale(1);
+     }
+
+     50% {
+         transform: translate(3%, -2%) scale(1.05);
+     }
+ }
+
+ @keyframes bgDotPulse {
+
+     0%,
+     100% {
+         opacity: 0.25;
+         transform: scale(1);
+     }
+
+     50% {
+         opacity: 0.55;
+         transform: scale(1.15);
+     }
+ }
+
+ body.dark-mode .bg-circle {
+     opacity: 0.45;
+ }
+
+ body.dark-mode .bg-dot {
+     box-shadow: 0 0 14px rgba(192, 255, 78, 0.45);
+ }
+
  .home-container {
+     position: relative;
+     z-index: 2;
      display: grid;
      grid-template-columns: 1fr 1fr;
      gap: 3rem;
@@ -568,52 +754,94 @@
 
  .project-card {
      background: var(--bg-card);
-     padding: 1.8rem;
-     border-radius: 12px;
+     border-radius: 16px;
+     overflow: hidden;
      box-shadow: var(--card-shadow);
      border: 1px solid var(--border-subtle);
-     transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+     transition: transform 0.25s ease, box-shadow 0.25s ease;
+     display: flex;
+     flex-direction: column;
+     height: 100%;
  }
 
  .project-card:hover {
      transform: translateY(-6px);
-     box-shadow: 0 18px 35px rgba(64, 81, 59, 0.35);
+     box-shadow: 0 18px 35px rgba(64, 81, 59, 0.25);
  }
 
- .project-card h3 {
+ .project-image {
+     width: 100%;
+     height: 200px;
+     overflow: hidden;
+     background: var(--shadow);
+ }
+
+ .project-image img {
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+     display: block;
+ }
+
+ .project-content {
+     padding: 1.35rem 1.25rem 1.5rem;
+     display: flex;
+     flex-direction: column;
+     gap: 0.65rem;
+     flex: 1;
+ }
+
+ .project-title {
      color: var(--primary);
      font-size: 1.2rem;
-     margin-bottom: 0.6rem;
+     font-weight: 600;
+     margin: 0;
+     line-height: 1.3;
  }
 
- .project-card p {
+ .project-description {
      color: var(--text-secondary);
      font-size: 0.95rem;
+     line-height: 1.55;
+     margin: 0;
+     flex: 1;
  }
 
  .project-tags {
      display: flex;
      flex-wrap: wrap;
      gap: 0.4rem;
-     margin-top: 0.9rem;
  }
 
  .project-tags span {
-     font-size: 0.8rem;
-     padding: 0.18rem 0.6rem;
+     font-size: 0.78rem;
+     padding: 0.28rem 0.65rem;
      border-radius: 999px;
-     background: rgba(164, 190, 123, 0.22);
+     background: rgba(164, 190, 123, 0.2);
      color: var(--primary);
  }
 
- /* ===== Certificates Section ===== */
- .certificates-note {
-     text-align: center;
-     color: var(--text-secondary);
-     margin-bottom: 2rem;
-     font-size: 0.95rem;
+ .project-actions {
+     margin-top: 0.35rem;
  }
 
+ .btn-project {
+     display: inline-block;
+     color: var(--primary);
+     font-size: 0.92rem;
+     font-weight: 600;
+     padding: 0.35rem 0;
+     border-bottom: 2px solid var(--highlight-light);
+     transition: color 0.2s, border-color 0.2s, padding-left 0.2s;
+ }
+
+ .btn-project:hover {
+     color: var(--highlight);
+     border-bottom-color: var(--highlight);
+     padding-left: 4px;
+ }
+
+ /* ===== Certificates Section ===== */
  .certificates-grid {
      display: grid;
      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -625,13 +853,14 @@
      border-radius: 12px;
      box-shadow: var(--card-shadow);
      border: 1px solid var(--border-subtle);
-     padding: 0.75rem 0.75rem 1rem;
+     padding: 0.75rem;
      display: flex;
      flex-direction: column;
      align-items: center;
-     gap: 0.6rem;
+     gap: 0;
      transition: transform 0.25s ease, box-shadow 0.25s ease;
      position: relative;
+     cursor: pointer;
  }
 
  .certificate-image-wrap {
@@ -639,53 +868,20 @@
      width: 100%;
      border-radius: 8px;
      overflow: hidden;
+     aspect-ratio: 4 / 3;
  }
 
  .certificate-item img {
      width: 100%;
+     height: 100%;
      border-radius: 8px;
      object-fit: cover;
      display: block;
  }
 
- .certificate-zoom {
-     position: absolute;
-     top: 50%;
-     left: 50%;
-     transform: translate(-50%, -50%);
-     width: 48px;
-     height: 48px;
-     border-radius: 50%;
-     background: rgba(255, 255, 255, 0.9);
-     color: var(--primary);
-     font-size: 1.75rem;
-     font-weight: 700;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     opacity: 0;
-     transition: opacity 0.25s ease;
-     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
- }
-
- .certificate-item:hover .certificate-zoom {
-     opacity: 1;
- }
-
- .certificate-item p {
-     font-size: 0.9rem;
-     color: var(--text-secondary);
-     text-align: center;
- }
-
  .certificate-item:hover {
-     transform: translateY(-6px) scale(1.04);
-     box-shadow: 0 22px 40px rgba(0, 0, 0, 0.55);
-     z-index: 2;
- }
-
- .certificate-item {
-     cursor: pointer;
+     transform: translateY(-4px);
+     box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
  }
 
  /* ===== Certificate Modal (lightbox) ===== */
@@ -755,13 +951,6 @@
      height: auto;
      object-fit: contain;
      display: block;
- }
-
- .certificate-modal-title {
-     padding: 1rem 1.5rem;
-     font-size: 1rem;
-     color: var(--text-secondary);
-     text-align: center;
  }
 
  /* ===== Contact Section ===== */
@@ -874,12 +1063,6 @@
      margin-top: 0.5rem;
  }
 
- .form-note {
-     font-size: 0.75rem;
-     color: var(--text-secondary);
-     margin-top: 0.25rem;
- }
-
  /* ===== Footer ===== */
  .footer {
      padding: 2.5rem 1.5rem 1.5rem;
@@ -955,24 +1138,65 @@
  @media (max-width: 768px) {
      .nav-toggle {
          display: flex;
+         z-index: 1102;
+         position: relative;
      }
 
      .nav-menu {
          position: fixed;
-         top: 60px;
-         left: -100%;
-         width: 100%;
-         height: calc(100vh - 60px);
+         top: 0;
+         left: 0;
+         width: min(300px, 88vw);
+         max-width: 100%;
+         height: 100vh;
+         height: 100dvh;
+         margin: 0;
+         padding: 5.25rem 1.5rem 2rem;
          background: var(--nav-bg);
          flex-direction: column;
-         padding: 2rem;
-         gap: 1.5rem;
-         transition: left 0.3s ease;
-         border-top: 1px solid var(--border-subtle);
+         align-items: stretch;
+         gap: 0.25rem;
+         transition: transform 0.3s ease;
+         border-top: none;
+         border-right: 1px solid var(--border-subtle);
+         box-shadow: 8px 0 32px rgba(0, 0, 0, 0.12);
+         z-index: 1101;
+         transform: translateX(-100%);
+         overflow-y: auto;
+         -webkit-overflow-scrolling: touch;
      }
 
      .nav-menu.active {
-         left: 0;
+         transform: translateX(0);
+     }
+
+     .nav-menu li {
+         width: 100%;
+         list-style: none;
+     }
+
+     .nav-menu a {
+         display: block;
+         padding: 0.85rem 1rem;
+         font-size: 1.05rem;
+         border-radius: 10px;
+         width: 100%;
+     }
+
+     .nav-menu a:hover,
+     .nav-menu a:focus-visible {
+         background: rgba(164, 190, 123, 0.2);
+         color: var(--highlight);
+     }
+
+     .nav-menu .theme-toggle {
+         margin: 1rem auto 0;
+         width: 48px;
+         height: 48px;
+     }
+
+     body.menu-open {
+         overflow: hidden;
      }
 
      .section {
@@ -1016,6 +1240,30 @@
 
      .contact-container {
          grid-template-columns: 1fr;
+     }
+
+     .contact-layout {
+         grid-template-columns: 1fr;
+         gap: 1.5rem;
+     }
+
+     .form-row {
+         grid-template-columns: 1fr;
+     }
+
+     .footer-container {
+         grid-template-columns: 1fr;
+         text-align: center;
+     }
+
+     .footer-text {
+         max-width: none;
+         margin-left: auto;
+         margin-right: auto;
+     }
+
+     .project-image {
+         height: 190px;
      }
  }
 
@@ -1102,11 +1350,11 @@
      border: 1px solid rgba(164, 190, 123, 0.3);
  }
 
- body.dark-mode .project-card h3 {
+ body.dark-mode .project-title {
      color: #EDF1D6;
  }
 
- body.dark-mode .project-card p {
+ body.dark-mode .project-description {
      color: #d0e0c0;
  }
 
@@ -1118,10 +1366,6 @@
  body.dark-mode .certificate-item {
      background: #2a3a2a;
      border: 1px solid rgba(164, 190, 123, 0.3);
- }
-
- body.dark-mode .certificate-item p {
-     color: #EDF1D6;
  }
 
  body.dark-mode .contact-card {
@@ -1227,1503 +1471,23 @@
      color: #1a2a1a;
  }
 
+ body.dark-mode .btn-project {
+     color: #c9e0a8;
+     border-bottom-color: #9DC08B;
+ }
+
  /* تعديل النص في Footer */
  body.dark-mode .footer-bottom {
      color: #a0b890;
  }
 
- /* تعديل النص في Certificates */
- body.dark-mode .certificates-note {
-     color: #d0e0c0;
- }
-
- /* ===== تحسينات صفحة الاتصال للموبايل ===== */
-
- /* تحسين تنسيق حقل البريد الإلكتروني */
- .contact-value.email-value {
-     word-break: break-all;
-     font-size: 0.9rem;
-     line-height: 1.4;
-     max-width: 100%;
-     text-align: center;
- }
-
- @media (max-width: 768px) {
-
-     /* تعديل الـ contact container */
-     .contact-container {
-         display: flex !important;
-         flex-direction: column !important;
-         gap: 1rem !important;
-         padding: 0 0.5rem !important;
-     }
-
-     /* تعديل بطاقات الاتصال */
-     .contact-card {
-         width: 100% !important;
-         padding: 1.5rem !important;
-         margin: 0 auto !important;
-         max-width: 400px !important;
-     }
-
-     /* تحسين عرض البريد الإلكتروني */
-     .contact-card:first-child .contact-value {
-         font-size: 0.85rem !important;
-         word-break: break-all !important;
-         white-space: normal !important;
-         padding: 0 0.5rem !important;
-         max-width: 280px !important;
-         margin: 0 auto !important;
-     }
-
-     /* تعديل layout حقل البريد الإلكتروني */
-     .contact-layout {
-         display: flex !important;
-         flex-direction: column !important;
-         gap: 1.5rem !important;
-         width: 100% !important;
-         padding: 0 !important;
-     }
-
-     /* تعديل عمود معلومات الاتصال */
-     .contact-info-column {
-         width: 100% !important;
-         display: flex !important;
-         flex-direction: column !important;
-         gap: 1rem !important;
-     }
-
-     /* تعديل عمود الفورم */
-     .contact-form-column {
-         width: 100% !important;
-         padding: 1.5rem !important;
-         margin-top: 0 !important;
-     }
-
-     /* تعديل الفورم */
-     .contact-form {
-         width: 100% !important;
-         gap: 1rem !important;
-     }
-
-     /* تعديل صف الفورم */
-     .form-row {
-         display: flex !important;
-         flex-direction: column !important;
-         gap: 1rem !important;
-         width: 100% !important;
-     }
-
-     /* تعديل حقول الفورم */
-     .form-field {
-         width: 100% !important;
-     }
-
-     .form-field input,
-     .form-field textarea {
-         width: 100% !important;
-         padding: 0.8rem !important;
-         font-size: 1rem !important;
-         border-radius: 10px !important;
-     }
-
-     /* تحسين زر الإرسال */
-     .form-submit {
-         width: 100% !important;
-     }
-
-     .form-submit .btn {
-         width: 100% !important;
-         padding: 1rem !important;
-         font-size: 1.1rem !important;
-     }
-
-     /* تحسين عرض البريد الإلكتروني والهاتف */
-     .contact-icon {
-         font-size: 1.8rem !important;
-         margin-bottom: 0.5rem !important;
-     }
-
-     .contact-label {
-         font-size: 1rem !important;
-         margin-bottom: 0.25rem !important;
-     }
-
-     /* تحسين خاص للبريد الإلكتروني */
-     .contact-card:has(.fa-envelope) .contact-value {
-         font-size: 0.8rem !important;
-         line-height: 1.5 !important;
-         letter-spacing: 0.3px !important;
-         background: rgba(164, 190, 123, 0.1) !important;
-         padding: 0.5rem !important;
-         border-radius: 8px !important;
-         margin-top: 0.5rem !important;
-     }
-
-     /* تحسين عرض الروابط */
-     .contact-value a {
-         display: inline-block !important;
-         max-width: 100% !important;
-         word-break: break-all !important;
-         color: var(--primary) !important;
-         text-decoration: underline !important;
-         text-decoration-color: var(--highlight-light) !important;
-     }
- }
-
- /* تحسينات للشاشات الصغيرة جداً */
- @media (max-width: 380px) {
-     .contact-card {
-         padding: 1rem !important;
-     }
-
-     .contact-card:first-child .contact-value {
-         font-size: 0.75rem !important;
-         max-width: 220px !important;
-     }
-
-     .contact-form-column {
-         padding: 1rem !important;
-     }
-
-     .form-field input,
-     .form-field textarea {
-         padding: 0.7rem !important;
-         font-size: 0.95rem !important;
-     }
-
-     .contact-icon {
-         font-size: 1.6rem !important;
-     }
- }
-
- /* تحسين عام للبطاقات */
- .contact-card {
-     transition: all 0.3s ease !important;
- }
-
- .contact-card:hover {
-     transform: translateY(-5px) !important;
-     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
- }
-
- /* تحسين مظهر البريد الإلكتروني */
- .contact-value {
-     position: relative !important;
-     z-index: 1 !important;
- }
-
- /* منع تجاوز النص */
- * {
-     word-wrap: break-word !important;
-     overflow-wrap: break-word !important;
- }
-
- /* ===== قسم الاتصال - نسخة محسنة نهائياً ===== */
-
- /* تنسيق الحاوية الرئيسية */
- .contact-layout {
-     display: grid;
-     grid-template-columns: 1fr 1fr;
-     gap: 2rem;
-     max-width: 1200px;
-     margin: 0 auto;
-     padding: 1rem;
- }
-
- /* تنسيق بطاقات المعلومات */
- .contact-info-column {
-     display: flex;
-     flex-direction: column;
-     gap: 1.5rem;
- }
-
- .contact-card {
-     background: var(--bg-card);
-     border-radius: 16px;
-     padding: 2rem;
-     box-shadow: var(--card-shadow);
-     border: 1px solid var(--border-subtle);
-     text-align: center;
-     transition: transform 0.3s ease;
- }
-
- .contact-icon {
-     font-size: 2.5rem;
-     margin-bottom: 1rem;
- }
-
- .contact-label {
-     font-size: 1.1rem;
-     font-weight: 600;
-     color: var(--primary);
-     margin-bottom: 0.5rem;
- }
-
- .contact-value {
-     font-size: 1rem;
-     color: var(--text-secondary);
-     word-break: break-word;
-     line-height: 1.6;
- }
-
- /* تنسيق خاص للبريد الإلكتروني */
- .contact-card:first-child .contact-value {
-     font-size: 1.1rem;
-     background: rgba(164, 190, 123, 0.1);
-     padding: 0.75rem;
-     border-radius: 12px;
-     margin-top: 0.5rem;
- }
-
- /* تنسيق الفورم */
- .contact-form-column {
-     background: var(--bg-card);
-     border-radius: 16px;
-     padding: 2rem;
-     box-shadow: var(--card-shadow);
-     border: 1px solid var(--border-subtle);
- }
-
- .contact-form {
-     display: flex;
-     flex-direction: column;
-     gap: 1.5rem;
- }
-
- .form-row {
-     display: grid;
-     grid-template-columns: 1fr 1fr;
-     gap: 1rem;
- }
-
- .form-field {
-     display: flex;
-     flex-direction: column;
-     gap: 0.5rem;
- }
-
- .form-field label {
-     font-size: 0.9rem;
-     font-weight: 500;
-     color: var(--text-secondary);
- }
-
- .form-field input,
- .form-field textarea {
-     width: 100%;
-     padding: 0.75rem 1rem;
-     border-radius: 10px;
-     border: 1px solid var(--border-subtle);
-     background: var(--bg-main);
-     color: var(--text-primary);
-     font-size: 1rem;
-     transition: border-color 0.3s ease;
- }
-
- .form-field input:focus,
- .form-field textarea:focus {
-     outline: none;
-     border-color: var(--highlight);
- }
-
- .form-submit {
-     margin-top: 0.5rem;
- }
-
- .form-submit .btn {
-     width: 100%;
-     padding: 1rem;
-     font-size: 1.1rem;
-     border-radius: 10px;
- }
-
- .form-note {
-     font-size: 0.8rem;
-     color: var(--text-secondary);
-     text-align: center;
-     margin-top: 1rem;
-     opacity: 0.8;
- }
-
- /* ===== تحسينات الموبايل - الأهم هنا ===== */
- @media screen and (max-width: 768px) {
-     .contact-layout {
-         grid-template-columns: 1fr !important;
-         /* صف واحد في الموبايل */
-         gap: 1.5rem !important;
-         padding: 0.5rem !important;
-     }
-
-     .contact-info-column {
-         gap: 1rem !important;
-     }
-
-     .contact-card {
-         padding: 1.5rem !important;
-         margin: 0 !important;
-         width: 100% !important;
-     }
-
-     /* تحسين عرض البريد الإلكتروني */
-     .contact-card:first-child .contact-value {
-         font-size: 0.95rem !important;
-         padding: 0.75rem !important;
-         word-break: break-all !important;
-         white-space: normal !important;
-         display: block !important;
-         max-width: 100% !important;
-     }
-
-     /* تحويل الفورم لصف واحد */
-     .form-row {
-         grid-template-columns: 1fr !important;
-         /* حقل تحت حقل */
-         gap: 1rem !important;
-     }
-
-     .contact-form-column {
-         padding: 1.5rem !important;
-     }
-
-     .form-field input,
-     .form-field textarea {
-         padding: 0.875rem !important;
-         /* زيادة حجم المساحة للموبايل */
-         font-size: 1rem !important;
-     }
-
-     /* تكبير زر الإرسال */
-     .form-submit .btn {
-         padding: 1.125rem !important;
-         font-size: 1.125rem !important;
-     }
-
-     /* تحسين عرض الأيقونات */
-     .contact-icon {
-         font-size: 2rem !important;
-     }
-
-     .contact-label {
-         font-size: 1rem !important;
-     }
- }
-
- /* تحسينات للشاشات الصغيرة جداً */
- @media screen and (max-width: 380px) {
-     .contact-card {
-         padding: 1.25rem !important;
-     }
-
-     .contact-card:first-child .contact-value {
-         font-size: 0.85rem !important;
-     }
-
-     .contact-icon {
-         font-size: 1.75rem !important;
-     }
- }
-
- /* ===== تحديثات قسم المشاريع ===== */
-
- .projects-grid {
-     display: grid;
-     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-     gap: 2rem;
-     padding: 2rem 0;
- }
-
- .project-card {
-     background: var(--bg-card);
-     border-radius: 20px;
-     overflow: hidden;
-     box-shadow: var(--card-shadow);
-     border: 1px solid var(--border-subtle);
-     transition: all 0.3s ease;
-     display: flex;
-     flex-direction: column;
-     height: 100%;
- }
-
- .project-card:hover {
-     transform: translateY(-8px);
-     box-shadow: 0 20px 30px rgba(64, 81, 59, 0.3);
- }
-
- /* تنسيق الصور */
- .project-image {
-     width: 100%;
-     height: 220px;
-     overflow: hidden;
-     background: var(--shadow);
-     position: relative;
- }
-
- .project-image img {
-     width: 100%;
-     height: 100%;
-     object-fit: cover;
-     transition: transform 0.5s ease;
-     display: block;
- }
-
- .project-card:hover .project-image img {
-     transform: scale(1.08);
- }
-
- /* المحتوى */
- .project-content {
-     padding: 1.8rem 1.5rem;
-     display: flex;
-     flex-direction: column;
-     gap: 0.8rem;
-     flex: 1;
- }
-
- .project-title {
-     color: var(--primary);
-     font-size: 1.4rem;
-     font-weight: 600;
-     margin: 0;
-     line-height: 1.3;
- }
-
- .project-description {
-     color: var(--text-secondary);
-     font-size: 0.95rem;
-     line-height: 1.6;
-     margin: 0 0 0.5rem 0;
-     flex: 1;
- }
-
- /* التاغات */
- .project-tags {
-     display: flex;
-     flex-wrap: wrap;
-     gap: 0.5rem;
-     margin: 0.5rem 0;
- }
-
- .project-tags span {
-     background: rgba(164, 190, 123, 0.15);
-     color: var(--primary);
-     font-size: 0.8rem;
-     font-weight: 500;
-     padding: 0.4rem 1rem;
-     border-radius: 50px;
-     border: 1px solid rgba(64, 81, 59, 0.1);
-     letter-spacing: 0.3px;
- }
-
- /* الزر */
- .project-actions {
-     margin-top: 0.8rem;
- }
-
- .btn-project {
-     display: inline-block;
-     background: transparent;
-     color: var(--primary);
-     font-size: 0.95rem;
-     font-weight: 600;
-     padding: 0.5rem 0;
-     border-bottom: 2px solid var(--highlight-light);
-     transition: all 0.2s ease;
-     text-decoration: none;
- }
-
- .btn-project:hover {
-     color: var(--highlight);
-     border-bottom-color: var(--highlight);
-     padding-left: 5px;
- }
-
- /* تحسينات الموبايل */
- @media screen and (max-width: 768px) {
-     .projects-grid {
-         grid-template-columns: 1fr;
-         gap: 1.5rem;
-         padding: 1rem;
-     }
-
-     .project-image {
-         height: 200px;
-     }
-
-     .project-content {
-         padding: 1.5rem;
-     }
-
-     .project-title {
-         font-size: 1.3rem;
-     }
- }
-
- @media screen and (max-width: 480px) {
-     .project-image {
-         height: 180px;
-     }
-
-     .project-tags span {
-         font-size: 0.75rem;
-         padding: 0.3rem 0.8rem;
-     }
- }
-
- /* ===== حل مشكلة الصور على الموبايل ===== */
-
- @media screen and (max-width: 768px) {
-     .projects-grid {
-         display: flex !important;
-         flex-direction: column !important;
-         gap: 1.5rem !important;
-         padding: 1rem !important;
-         width: 100% !important;
-     }
-
-     .project-card {
-         width: 100% !important;
-         margin: 0 auto !important;
-         display: flex !important;
-         flex-direction: column !important;
-         background: var(--bg-card) !important;
-         border-radius: 16px !important;
-         overflow: hidden !important;
-     }
-
-     .project-image {
-         width: 100% !important;
-         height: 220px !important;
-         position: relative !important;
-         overflow: hidden !important;
-         background: #f0f0f0 !important;
-         /* خلفية مؤقتة */
-     }
-
-     .project-image img {
-         width: 100% !important;
-         height: 100% !important;
-         object-fit: cover !important;
-         display: block !important;
-         position: relative !important;
-     }
-
-     /* للتأكد إن الصورة ظاهرة */
-     .project-image::after {
-         display: none !important;
-     }
- }
-
- /* اختبار سريع - لو ظهر لون أحمر يبقى الكود شغال */
- @media screen and (max-width: 768px) {
-     .test-mobile {
-         background: red !important;
-     }
- }
-
- /* ========== نظام الإضاءة الشامل للموقع كله ========== */
-
- /* كل العناصر تبقى فوق الإضاءة */
- section,
- .navbar,
- footer,
- .certificate-modal,
- .btn,
- .project-card,
- .skill-card,
- .about-card,
- .contact-card {
-     position: relative;
-     z-index: 5;
- }
-
- /* طبقة الإضاءة الرئيسية */
- .light-system {
-     position: fixed;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     pointer-events: none;
-     z-index: 1;
-     overflow: hidden;
- }
-
- /* الإضاءة المحيطة الأساسية (بتتغير مع الدارك/اللايت) */
- .ambient-light {
-     position: absolute;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     background: radial-gradient(circle at 30% 40%,
-             rgba(192, 255, 78, 0.05) 0%,
-             transparent 60%);
-     animation: ambientPulse 10s ease-in-out infinite;
- }
-
- /* بقعة ضوء متحركة 1 (اليسار/فوق) */
- .spotlight-1 {
-     position: absolute;
-     top: -20%;
-     left: -10%;
-     width: 70%;
-     height: 70%;
-     background: radial-gradient(circle at center,
-             rgba(192, 255, 78, 0.12) 0%,
-             rgba(192, 255, 78, 0.03) 30%,
-             transparent 80%);
-     filter: blur(70px);
-     animation: moveSpotlight1 22s infinite alternate ease-in-out;
- }
-
- /* بقعة ضوء متحركة 2 (اليمين/تحت) */
- .spotlight-2 {
-     position: absolute;
-     bottom: -20%;
-     right: -10%;
-     width: 80%;
-     height: 80%;
-     background: radial-gradient(circle at center,
-             rgba(192, 255, 78, 0.08) 0%,
-             rgba(255, 255, 255, 0.02) 40%,
-             transparent 80%);
-     filter: blur(90px);
-     animation: moveSpotlight2 25s infinite alternate ease-in-out;
- }
-
- /* جزيئات مضيئة في الخلفية */
- .glow-particles {
-     position: absolute;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     background-image:
-         radial-gradient(circle at 15% 25%, rgba(192, 255, 78, 0.03) 2px, transparent 2px),
-         radial-gradient(circle at 75% 60%, rgba(192, 255, 78, 0.03) 2px, transparent 2px),
-         radial-gradient(circle at 45% 80%, rgba(192, 255, 78, 0.02) 3px, transparent 3px),
-         radial-gradient(circle at 90% 15%, rgba(192, 255, 78, 0.02) 3px, transparent 3px),
-         radial-gradient(circle at 10% 85%, rgba(192, 255, 78, 0.03) 2px, transparent 2px),
-         radial-gradient(circle at 65% 35%, rgba(192, 255, 78, 0.02) 3px, transparent 3px);
-     background-size: 300px 300px;
-     animation: particleFloat 60s linear infinite;
-     opacity: 0.5;
- }
-
- /* النجوم المتحركة */
- .stars {
-     position: fixed;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     z-index: 2;
-     pointer-events: none;
- }
-
- .star {
-     position: absolute;
-     width: 3px;
-     height: 3px;
-     background: #C0FF4E;
-     border-radius: 50%;
-     opacity: 0.3;
-     filter: blur(1px);
-     animation: starTwinkle 5s infinite;
-     box-shadow: 0 0 10px #C0FF4E;
- }
-
- /* تأخيرات مختلفة للنجوم */
- .star:nth-child(1) {
-     animation-delay: 0s;
- }
-
- .star:nth-child(2) {
-     animation-delay: 0.7s;
- }
-
- .star:nth-child(3) {
-     animation-delay: 1.2s;
- }
-
- .star:nth-child(4) {
-     animation-delay: 1.8s;
- }
-
- .star:nth-child(5) {
-     animation-delay: 2.3s;
- }
-
- .star:nth-child(6) {
-     animation-delay: 2.9s;
- }
-
- .star:nth-child(7) {
-     animation-delay: 3.4s;
- }
-
- .star:nth-child(8) {
-     animation-delay: 4.0s;
- }
-
- .star:nth-child(9) {
-     animation-delay: 4.5s;
- }
-
- .star:nth-child(10) {
-     animation-delay: 5.1s;
- }
-
- .star:nth-child(11) {
-     animation-delay: 1.5s;
- }
-
- .star:nth-child(12) {
-     animation-delay: 2.1s;
- }
-
- .star:nth-child(13) {
-     animation-delay: 3.7s;
- }
-
- .star:nth-child(14) {
-     animation-delay: 0.3s;
- }
-
- .star:nth-child(15) {
-     animation-delay: 4.8s;
- }
-
- /* ========== animations ========== */
- @keyframes ambientPulse {
-
-     0%,
-     100% {
-         opacity: 0.6;
-     }
-
-     50% {
-         opacity: 1;
-     }
- }
-
- @keyframes moveSpotlight1 {
-     0% {
-         transform: translate(0, 0) scale(1);
-         opacity: 0.5;
-     }
-
-     50% {
-         transform: translate(8%, 8%) scale(1.2);
-         opacity: 0.8;
-     }
-
-     100% {
-         transform: translate(-4%, 4%) scale(0.9);
-         opacity: 0.6;
-     }
- }
-
- @keyframes moveSpotlight2 {
-     0% {
-         transform: translate(0, 0) scale(1);
-         opacity: 0.4;
-     }
-
-     50% {
-         transform: translate(-8%, -8%) scale(1.3);
-         opacity: 0.7;
-     }
-
-     100% {
-         transform: translate(4%, -4%) scale(0.8);
-         opacity: 0.5;
-     }
- }
-
- @keyframes particleFloat {
-     0% {
-         background-position: 0 0;
-     }
-
-     100% {
-         background-position: 300px 300px;
-     }
- }
-
- @keyframes starTwinkle {
-
-     0%,
-     100% {
-         opacity: 0.2;
-         transform: scale(1);
-         box-shadow: 0 0 5px #C0FF4E;
-     }
-
-     50% {
-         opacity: 0.9;
-         transform: scale(2);
-         box-shadow: 0 0 20px #C0FF4E, 0 0 40px #C0FF4E;
-     }
- }
-
- /* ========== Light Mode ========== */
- @media (prefers-color-scheme: light) {
-     .ambient-light {
-         background: radial-gradient(circle at 30% 40%,
-                 rgba(0, 120, 0, 0.04) 0%,
-                 transparent 60%);
-     }
-
-     .spotlight-1 {
-         background: radial-gradient(circle at center,
-                 rgba(0, 130, 0, 0.08) 0%,
-                 rgba(0, 100, 0, 0.02) 30%,
-                 transparent 80%);
-     }
-
-     .spotlight-2 {
-         background: radial-gradient(circle at center,
-                 rgba(0, 130, 0, 0.05) 0%,
-                 rgba(0, 0, 0, 0.01) 40%,
-                 transparent 80%);
-     }
-
-     .glow-particles {
-         background-image:
-             radial-gradient(circle at 15% 25%, rgba(0, 100, 0, 0.02) 2px, transparent 2px),
-             radial-gradient(circle at 75% 60%, rgba(0, 100, 0, 0.02) 2px, transparent 2px),
-             radial-gradient(circle at 45% 80%, rgba(0, 100, 0, 0.01) 3px, transparent 3px);
-         opacity: 0.3;
-     }
-
-     .star {
-         background: #2a7a2a;
-         box-shadow: 0 0 10px #2a7a2a;
-         opacity: 0.2;
-     }
- }
-
- /* ========== تأثيرات إضافية للعناصر ========== */
- .highlight {
-     position: relative;
-     display: inline-block;
- }
-
- .highlight::after {
-     content: '';
-     position: absolute;
-     bottom: -2px;
-     left: 0;
-     width: 100%;
-     height: 2px;
-     background: linear-gradient(90deg, transparent, #C0FF4E, transparent);
-     filter: blur(2px);
-     animation: lineGlow 3s infinite;
- }
-
- @keyframes lineGlow {
-
-     0%,
-     100% {
-         opacity: 0.3;
-         width: 0%;
-         left: 50%;
-     }
-
-     50% {
-         opacity: 1;
-         width: 100%;
-         left: 0%;
-     }
- }
-
- /* تأثير للكروت عند المرور */
- .project-card::before,
- .skill-card::before,
- .about-card::before {
-     content: '';
-     position: absolute;
-     top: -50%;
-     left: -50%;
-     width: 200%;
-     height: 200%;
-     background: radial-gradient(circle at center,
-             rgba(192, 255, 78, 0.1) 0%,
-             transparent 70%);
-     opacity: 0;
-     transition: opacity 0.5s;
-     pointer-events: none;
-     z-index: -1;
- }
-
- .project-card:hover::before,
- .skill-card:hover::before,
- .about-card:hover::before {
-     opacity: 1;
- }
-
- /* ===== FORCE MODAL TO TOP - ULTIMATE FIX ===== */
-
- /* القضاء على أي مشكلة */
- .certificate-modal {
-     display: none !important;
-     position: fixed !important;
-     top: 0 !important;
-     left: 0 !important;
-     right: 0 !important;
-     bottom: 0 !important;
-     width: 100vw !important;
-     height: 100vh !important;
-     background: transparent !important;
-     margin: 0 !important;
-     padding: 0 !important;
-     box-sizing: border-box !important;
- }
-
- .certificate-modal.open {
-     display: flex !important;
-     align-items: center !important;
-     justify-content: center !important;
-     z-index: 999999999 !important;
- }
-
- /* الخلفية السوداء - الأهم */
- .certificate-modal-backdrop {
-     position: fixed !important;
-     top: 0 !important;
-     left: 0 !important;
-     right: 0 !important;
-     bottom: 0 !important;
-     width: 100vw !important;
-     height: 100vh !important;
-     background: rgba(0, 0, 0, 0.95) !important;
-     backdrop-filter: blur(10px) !important;
-     z-index: 999999998 !important;
-     margin: 0 !important;
-     padding: 0 !important;
- }
-
- /* صندوق الشهادة */
- .certificate-modal-box {
-     position: relative !important;
-     z-index: 999999999 !important;
-     max-width: 90vw !important;
-     max-height: 90vh !important;
-     background: transparent !important;
-     display: flex !important;
-     align-items: center !important;
-     justify-content: center !important;
-     margin: 0 !important;
-     padding: 0 !important;
- }
-
- /* الصورة */
- .certificate-modal-img {
-     max-width: 100% !important;
-     max-height: 85vh !important;
-     width: auto !important;
-     height: auto !important;
-     object-fit: contain !important;
-     border-radius: 12px !important;
-     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5) !important;
-     background: white !important;
-     padding: 10px !important;
-     position: relative !important;
-     z-index: 999999999 !important;
- }
-
- /* زر الإغلاق */
- .certificate-modal-close {
-     position: absolute !important;
-     top: 10px !important;
-     right: 10px !important;
-     z-index: 1000000000 !important;
-     width: 45px !important;
-     height: 45px !important;
-     border-radius: 50% !important;
-     background: rgba(0, 0, 0, 0.7) !important;
-     color: white !important;
-     border: 2px solid #C0FF4E !important;
-     font-size: 30px !important;
-     cursor: pointer !important;
-     display: flex !important;
-     align-items: center !important;
-     justify-content: center !important;
- }
-
- .certificate-modal-close:hover {
-     background: #C0FF4E !important;
-     color: black !important;
-     transform: scale(1.1) !important;
- }
-
- /* إخفاء العنوان */
- .certificate-modal-title {
-     display: none !important;
- }
-
- /* تعطيل أي تأثير من الإضاءة على الـ Modal */
- .light-system,
- .stars,
- .spotlight-1,
- .spotlight-2,
- .ambient-light,
- .glow-particles {
-     pointer-events: none !important;
- }
-
- /* ===== Certificates Section - Original Design ===== */
-
- .certificates-grid {
-     display: grid;
-     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-     gap: 2rem;
-     padding: 2rem 0;
- }
-
- .certificate-item {
-     background: var(--bg-card);
-     border-radius: 12px;
-     box-shadow: var(--card-shadow);
-     border: 1px solid var(--border-subtle);
-     padding: 1rem;
-     display: flex;
-     flex-direction: column;
-     align-items: center;
-     gap: 1rem;
-     transition: all 0.3s ease;
-     cursor: pointer;
- }
-
- .certificate-item:hover {
-     transform: translateY(-6px);
-     box-shadow: 0 20px 30px rgba(64, 81, 59, 0.25);
- }
-
- .certificate-image-wrap {
-     width: 100%;
-     border-radius: 8px;
-     overflow: hidden;
-     aspect-ratio: 4/3;
- }
-
- .certificate-image-wrap img {
-     width: 100%;
-     height: 100%;
-     object-fit: cover;
-     display: block;
-     transition: transform 0.3s ease;
- }
-
- .certificate-item:hover .certificate-image-wrap img {
-     transform: scale(1.05);
- }
-
- .certificate-item p {
-     font-size: 0.95rem;
-     color: var(--text-secondary);
-     text-align: center;
-     font-weight: 500;
- }
-
- /* Dark mode adjustments */
- body.dark-mode .certificate-item {
-     background: #2a3a2a;
-     border-color: rgba(164, 190, 123, 0.2);
- }
-
- body.dark-mode .certificate-item p {
-     color: #EDF1D6;
- }
-
- /* ===== Certificates Section - بدون نص تحت ===== */
-
- .certificates-grid {
-     display: grid;
-     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-     gap: 2rem;
-     padding: 2rem 0;
- }
-
- .certificate-item {
-     background: var(--bg-card);
-     border-radius: 12px;
-     box-shadow: var(--card-shadow);
-     border: 1px solid var(--border-subtle);
-     padding: 1rem;
-     transition: all 0.3s ease;
-     cursor: pointer;
- }
-
- .certificate-item:hover {
-     transform: translateY(-6px);
-     box-shadow: 0 20px 30px rgba(64, 81, 59, 0.25);
- }
-
- .certificate-image-wrap {
-     width: 100%;
-     border-radius: 8px;
-     overflow: hidden;
-     aspect-ratio: 4/3;
- }
-
- .certificate-image-wrap img {
-     width: 100%;
-     height: 100%;
-     object-fit: cover;
-     display: block;
-     transition: transform 0.3s ease;
- }
-
- .certificate-item:hover .certificate-image-wrap img {
-     transform: scale(1.05);
- }
-
- /* إزالة أي نص كان موجود */
- .certificate-item p {
-     display: none;
- }
-
- /* Dark mode adjustments */
- body.dark-mode .certificate-item {
-     background: #2a3a2a;
-     border-color: rgba(164, 190, 123, 0.2);
- }
-
- /* ===== شبكة الجزيئات المتحركة - زي موقع صديقك ===== */
-
- .particles-network {
-     position: fixed;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     z-index: 0;
-     pointer-events: none;
-     overflow: hidden;
- }
-
- /* الحاوية الرئيسية للجزيئات */
- .particles-container {
-     position: relative;
-     width: 100%;
-     height: 100%;
- }
-
- /* كل جزيء على حدة */
- .particle {
-     position: absolute;
-     width: 4px;
-     height: 4px;
-     background: var(--highlight);
-     border-radius: 50%;
-     opacity: 0.2;
-     box-shadow: 0 0 10px var(--highlight-light);
-     animation: particleFloat 15s infinite ease-in-out;
- }
-
- /* توزيع الجزيئات في أماكن مختلفة */
- .particle-1 {
-     top: 15%;
-     left: 10%;
-     animation-duration: 14s;
- }
-
- .particle-2 {
-     top: 25%;
-     left: 80%;
-     animation-duration: 16s;
-     animation-delay: -2s;
- }
-
- .particle-3 {
-     top: 45%;
-     left: 30%;
-     animation-duration: 18s;
-     animation-delay: -4s;
- }
-
- .particle-4 {
-     top: 60%;
-     left: 70%;
-     animation-duration: 15s;
-     animation-delay: -1s;
- }
-
- .particle-5 {
-     top: 75%;
-     left: 40%;
-     animation-duration: 17s;
-     animation-delay: -5s;
- }
-
- .particle-6 {
-     top: 85%;
-     left: 85%;
-     animation-duration: 19s;
-     animation-delay: -7s;
- }
-
- .particle-7 {
-     top: 35%;
-     left: 50%;
-     animation-duration: 16s;
-     animation-delay: -3s;
- }
-
- .particle-8 {
-     top: 50%;
-     left: 15%;
-     animation-duration: 18s;
-     animation-delay: -6s;
- }
-
- .particle-9 {
-     top: 70%;
-     left: 20%;
-     animation-duration: 15s;
-     animation-delay: -2.5s;
- }
-
- .particle-10 {
-     top: 20%;
-     left: 60%;
-     animation-duration: 17s;
-     animation-delay: -4.5s;
- }
-
- .particle-11 {
-     top: 90%;
-     left: 45%;
-     animation-duration: 19s;
-     animation-delay: -8s;
- }
-
- .particle-12 {
-     top: 40%;
-     left: 90%;
-     animation-duration: 16s;
-     animation-delay: -1.5s;
- }
-
- .particle-13 {
-     top: 55%;
-     left: 55%;
-     animation-duration: 18s;
-     animation-delay: -5.5s;
- }
-
- .particle-14 {
-     top: 10%;
-     left: 35%;
-     animation-duration: 17s;
-     animation-delay: -3.5s;
- }
-
- .particle-15 {
-     top: 80%;
-     left: 5%;
-     animation-duration: 19s;
-     animation-delay: -6.5s;
- }
-
- .particle-16 {
-     top: 30%;
-     left: 75%;
-     animation-duration: 15s;
-     animation-delay: -0.5s;
- }
-
- /* الخطوط الواصلة بين الجزيئات */
- .particle-line {
-     position: absolute;
-     background: linear-gradient(90deg,
-             var(--highlight-light),
-             transparent);
-     height: 1px;
-     transform-origin: left center;
-     opacity: 0.1;
-     animation: lineFade 8s infinite;
- }
-
- /* حركة الجزيئات */
- @keyframes particleFloat {
-
-     0%,
-     100% {
-         transform: translate(0, 0) scale(1);
-         opacity: 0.2;
-     }
-
-     25% {
-         transform: translate(20px, -15px) scale(1.3);
-         opacity: 0.4;
-     }
-
-     50% {
-         transform: translate(-15px, 20px) scale(0.8);
-         opacity: 0.2;
-     }
-
-     75% {
-         transform: translate(-20px, -10px) scale(1.2);
-         opacity: 0.3;
-     }
- }
-
- /* حركة الخطوط */
- @keyframes lineFade {
-
-     0%,
-     100% {
-         opacity: 0.05;
-     }
-
-     50% {
-         opacity: 0.15;
-     }
- }
-
- /* ===== تفعيل الأنيميشن بالـ JS ===== */
- .canvas-particles {
-     position: fixed;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     z-index: 0;
-     pointer-events: none;
- }
-
- /* تعديل ألوان الدارك مود */
- body.dark-mode .particle {
-     background: var(--highlight-light);
-     opacity: 0.3;
-     box-shadow: 0 0 15px var(--highlight);
- }
-
- body.dark-mode .particle-line {
-     background: linear-gradient(90deg,
-             var(--highlight),
-             transparent);
-     opacity: 0.15;
- }
-
- /* تقليل الحركة للموبايل */
- @media (max-width: 768px) {
-     .particle {
-         opacity: 0.1;
-     }
-
-     .particle-line {
-         opacity: 0.05;
-     }
- }
-
  @media (prefers-reduced-motion: reduce) {
+     html {
+         scroll-behavior: auto;
+     }
 
-     .particle,
-     .particle-line {
+     .bg-circle,
+     .bg-dot {
          animation: none;
      }
  }
-
- /* ===== جزيئات الخلفية - محسنة لـ Light Mode ===== */
-
- /*Canvas particles - لو بتستخدم الطريقة المتقدمة */
- .canvas-particles {
-     position: fixed;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     z-index: 0;
-     pointer-events: none;
- }
-
- /* تحسين لون الجزيئات في Light Mode */
- body:not(.dark-mode) .canvas-particles canvas {
-     filter: brightness(1.2) contrast(1.1);
- }
-
- /* لو بتستخدم الـ CSS particles (الطريقة الأولى) */
- body:not(.dark-mode) .particle {
-     background: #609966 !important;
-     /* لون أخضر غامق للجزيئات */
-     opacity: 0.4 !important;
-     /* زيادة الظهور */
-     box-shadow: 0 0 15px #A4BE7B !important;
-     /* إضاءة خلفية */
- }
-
- body:not(.dark-mode) .particle-line {
-     background: linear-gradient(90deg,
-             #40513B,
-             transparent) !important;
-     opacity: 0.25 !important;
-     /* الخطوط أوضح */
- }
-
- body:not(.dark-mode) .particle:nth-child(odd) {
-     background: #40513B !important;
-     opacity: 0.5 !important;
- }
-
- body:not(.dark-mode) .particle:nth-child(even) {
-     background: #9DC08B !important;
-     opacity: 0.45 !important;
- }
-
- /* إضافة جزيئات إضافية للـ Light Mode */
- body:not(.dark-mode) .particles-container::after {
-     content: '';
-     position: absolute;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     background: radial-gradient(circle at 30% 40%,
-             rgba(96, 153, 102, 0.1) 0%,
-             transparent 50%);
-     pointer-events: none;
- }
-
- /* ===== جزيئات الخلفية - إضاءة مخفضة لـ Light Mode ===== */
-
- /* تقليل إضاءة الجزيئات في Light Mode */
- body:not(.dark-mode) .particle {
-     background: #40513B !important;
-     /* لون غامق بدون إضاءة */
-     opacity: 0.15 !important;
-     /* تقليل الشفافية (كانت 0.4) */
-     box-shadow: none !important;
-     /* إزالة الإضاءة الخلفية تماماً */
- }
-
- body:not(.dark-mode) .particle:nth-child(odd) {
-     background: #40513B !important;
-     opacity: 0.12 !important;
- }
-
- body:not(.dark-mode) .particle:nth-child(even) {
-     background: #609966 !important;
-     opacity: 0.1 !important;
- }
-
- /* تقليل وضوح الخطوط */
- body:not(.dark-mode) .particle-line {
-     background: linear-gradient(90deg,
-             #40513B,
-             transparent) !important;
-     opacity: 0.08 !important;
-     /* تقليل وضوح الخطوط (كانت 0.25) */
- }
-
- /* إزالة أي إضاءة إضافية */
- body:not(.dark-mode) .particles-container::after {
-     display: none !important;
-     /* إزالة الـ gradient الزائد */
- }
- 
